@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASL Sign Recognition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body data-theme="dark">
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <i class="fas fa-hand-paper"></i>
+                <span>ASL Recognition</span>
+            </div>
+            <div class="navbar-controls">
+                <button class="theme-toggle" aria-label="Toggle theme" id="theme-toggle"></button>
+                <button class="btn btn-secondary" id="help-btn">
+                    <i class="fas fa-question-circle btn-icon"></i>
+                    <span>Help</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <header class="app-header">
+            <h1 class="app-title">ASL Sign Recognition</h1>
+            <p class="app-subtitle">Real-time American Sign Language translation using AI</p>
+        </header>
+
+        <main class="video-section">
+            <div class="video-wrapper" id="video-wrapper">
+                <div class="skeleton-loader" id="skeleton-loader"></div>
+                <img id="video_feed" class="video-feed" src="{{ url_for('video_feed') }}" alt="ASL Camera Feed">
+                <div class="video-overlay"></div>
+                <div class="video-controls">
+                    <button class="btn btn-secondary" id="toggle-camera-btn">
+                        <i class="fas fa-pause btn-icon"></i>
+                        <span>Pause</span>
+                    </button>
+                    <button class="btn btn-secondary" id="screenshot-btn">
+                        <i class="fas fa-camera btn-icon"></i>
+                        <span>Screenshot</span>
+                    </button>
+                    <button class="btn btn-secondary" id="fullscreen-btn">
+                        <i class="fas fa-expand btn-icon"></i>
+                        <span>Fullscreen</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <aside class="sidebar">
+            <div class="card prediction-card">
+                <div class="card-header">
+                    <i class="fas fa-brain card-icon"></i>
+                    <h2 class="card-title">Current Prediction</h2>
+                </div>
+                <div class="prediction-display" id="prediction-display">Ready...</div>
+                <div class="confidence-meter">
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidence-fill"></div>
+                    </div>
+                    <span class="confidence-text" id="confidence-text">0%</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-wifi card-icon"></i>
+                    <h2 class="card-title">Connection Status</h2>
+                </div>
+                <div class="status-indicator" id="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Initializing...</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-language card-icon"></i>
+                    <h2 class="card-title">Display Language</h2>
+                </div>
+                <form id="language-form" action="/" method="POST">
+                    <div class="form-group">
+                        <label for="language-select" class="sr-only">Choose Language</label>
+                        <select name="language" id="language-select" class="form-select">
+                            {% for lang in available_languages %}
+                            <option value="{{ lang }}" {% if lang==language %}selected{% endif %}>
+                                {{ lang }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line card-icon"></i>
+                    <h2 class="card-title">Session Stats</h2>
+                </div>
+                <div class="stats-grid">
+                    <div>
+                        <div class="stat-value" id="signs-detected">0</div>
+                        <div class="stat-label">Signs Detected</div>
+                    </div>
+                    <div>
+                        <div class="stat-value" id="avg-confidence">0%</div>
+                        <div class="stat-label">Avg Confidence</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div class="flash-container" id="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash">
+            <i class="fas fa-check-circle"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <dialog id="help-modal" class="modal">
+        <h2 class="modal-title">How to Use & Shortcuts</h2>
+        <p>Position your hand clearly in front of the camera. The system will detect and translate signs in real-time.
+        </p>
+        <ul class="shortcuts-list">
+            <li><strong>Space:</strong> Pause/Resume camera</li>
+            <li><strong>S:</strong> Take screenshot</li>
+            <li><strong>F:</strong> Toggle fullscreen</li>
+            <li><strong>Esc:</strong> Close this dialog</li>
+        </ul>
+        <button class="btn btn-primary" id="close-modal-btn">Got it!</button>
+    </dialog>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

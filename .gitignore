@@ -1,0 +1,38 @@
+# --- Python Virtual Environment ---
+# Never commit your virtual environment folder.
+.venv/
+venv/
+env/
+
+# --- Python Cache & Bytecode ---
+_pycache_/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Model & Large Data Files ---
+# These are large, generated files. Your model.h5 should be handled by Git LFS.
+# See notes below.
+/model/model.h5
+/model/landmark_data.pickle
+/model/labels.npy
+/model/training_info.npy
+
+# --- Large Datasets ---
+# Datasets are usually too large for a Git repository.
+/dataset/
+
+# --- Generated Outputs ---
+# Do not track generated images or reports.
+/model_outputs/
+
+# --- Operating System & IDE Files ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Environment Variables ---
+# Never commit files containing secrets or environment variables.
+.env
+*.env
